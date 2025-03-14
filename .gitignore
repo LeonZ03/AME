@@ -1,3 +1,4 @@
 build/**
 project/**
+test_run_dir/**
 test_output.txt
