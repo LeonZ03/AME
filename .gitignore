@@ -1,6 +1,6 @@
-/.vscode/
-/build/
-/project/
-test_run_dir/**
-/target/
+ChiselProject/.vscode/
+ChiselProject/build/
+ChiselProject/project/
+ChiselProject/test_run_dir/**
+ChiselProject//target/
 test_output.txt
