@@ -1,4 +1,6 @@
-build/**
-project/**
+/.vscode/
+/build/
+/project/
 test_run_dir/**
+/target/
 test_output.txt
