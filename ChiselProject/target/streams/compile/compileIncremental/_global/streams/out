@@ -1,0 +1,6 @@
+[debug] [zinc] IncrementalCompile -----------
+[debug] IncrementalCompile.incrementalCompile
+[debug] previous = Stamps for: 21 products, 9 sources, 4 libraries
+[debug] current source = Set(${BASE}/src/main/scala/MMAU/MMAU.scala, ${BASE}/src/main/scala/MMAU/PE.scala, ${BASE}/src/main/scala/MMAU/FSM.scala, ${BASE}/src/main/scala/MMAU/Tile.scala, ${BASE}/src/main/scala/MMAU/DPA.scala, ${BASE}/src/main/scala/MMAU/CUBE.scala, ${BASE}/src/main/scala/common/Utils.scala, ${BASE}/src/main/scala/MMAU/ADD.scala, ${BASE}/src/main/scala/common/Consts.scala)
+[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(), unmodified = ...),Set(),Set(),API Changes: Set())
+[debug] No changes

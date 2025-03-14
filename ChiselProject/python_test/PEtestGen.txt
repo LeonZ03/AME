@@ -1,0 +1,38 @@
+val vecAdata = Seq(
+    "h8b69d919215df857".U,
+    "hbe33262a627d313e".U,
+    "hf0e7591d6720839e".U,
+    "h6200073f03f6f9bd".U,
+    "h9bf272e7fbf95d17".U,
+    "hcb5697d98e81dc79".U,
+    "h5170dd33169742c8".U,
+    "h11f7c87286df1f06".U,
+    "h94b204d1011326a9".U,
+    "h9b9d78575e71db26".U
+)
+
+val vecBdata = Seq(
+    "hf3837cc861d3bb8e".U,
+    "h4389ce5dc956644e".U,
+    "h682d3bcff2c27f7e".U,
+    "h6f5631b7d13f0ffa".U,
+    "hd778e6eac0a3541f".U,
+    "hdc9122d15c244f20".U,
+    "h0fcd4ffccc6fe0eb".U,
+    "h07590d13a64cd094".U,
+    "hde6ee8607002fc6c".U,
+    "h335e2c1f32f340f1".U
+)
+
+val eleCdata = Seq(
+    -28190,
+    6611,
+    -30608,
+    6148,
+    9543,
+    -23407,
+    -21201,
+    7092,
+    -18914,
+    -6187
+)
