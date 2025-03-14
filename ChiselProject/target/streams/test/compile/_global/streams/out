@@ -1,9 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0m/home/leon/Work/AME/ChiselProject/src/test/scala/MMAU_test.scala:15:5: inferred type arguments [ADD] do not conform to method test's type parameter bounds [T <: chisel3.Module][0m
-[0m[[0m[31merror[0m] [0m[0m    test(new ADD) { dut =>[0m
-[0m[[0m[31merror[0m] [0m[0m    ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/leon/Work/AME/ChiselProject/src/test/scala/MMAU_test.scala:15:10: type mismatch;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : ADD[0m
-[0m[[0m[31merror[0m] [0m[0m required: T[0m
-[0m[[0m[31merror[0m] [0m[0m    test(new ADD) { dut =>[0m
-[0m[[0m[31merror[0m] [0m[0m         ^[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
