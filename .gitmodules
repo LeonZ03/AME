@@ -1,0 +1,3 @@
+[submodule "XiangShan"]
+	path = XiangShan
+	url = git@github.com:OpenXiangShan/Utility.git
