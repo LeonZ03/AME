@@ -10,12 +10,13 @@ object Consts {
   val tileN         = 16
   val tileK         = 64
 
-
-
-
   val m             = 8   
   val n             = 8   
-  val k             = 4   
+  val k             = 4
+
+  val numM          = tileM / m
+  val numN          = tileN / n
+  val numK          = tileK / k
 }
 
 class MMAUFormat extends Module{
@@ -25,10 +26,11 @@ class MMAUFormat extends Module{
   val tileN         = Consts.tileN
   val tileK         = Consts.tileK
 
-
-
-
   val m             = Consts.m
   val n             = Consts.n
   val k             = Consts.k
+
+  val numM          = Consts.numM
+  val numN          = Consts.numN
+  val numK          = Consts.numK
 }
