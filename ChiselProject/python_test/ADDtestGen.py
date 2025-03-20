@@ -68,7 +68,7 @@ def write_to_file(eleCin, vecCin, vecCout, filename="ADDtestGen.txt"):
 
 if __name__ == "__main__":
     # 配置参数 n
-    n = 32  # 可以修改为其他值，但必须是 4 的倍数
+    n = 4  # 可以修改为其他值，但必须是 4 的倍数
     
     # 生成测试数据
     eleCin, vecCin, vecCout = generate_test_data(n)

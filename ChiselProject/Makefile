@@ -2,9 +2,10 @@
 DUT ?= MMAU
 
 SBT = sbt
-TEST = testOnly SimpleTestExpect
-WAVE_TEST = testOnly SimpleTestExpect -- -DwriteVcd=1
-WAVE_FILE = ./test_run_dir/DUT_should_pass/$(DUT).vcd
+TEST_NAME ?= SimpleTestExpect  # 默认测试名称
+TEST = testOnly $(TEST_NAME)
+WAVE_TEST = testOnly $(TEST_NAME) -- -DwriteVcd=1
+WAVE_FILE = ./test_run_dir/$(TEST_NAME)/$(DUT).vcd
 VERILOG_DIR = ./generated
 BUILD_DIR := ./build
 
@@ -28,12 +29,12 @@ all:
     
 	@echo "Files moved to $(BUILD_DIR)"
 
-# 目标：运行sbt "testOnly SimpleTestExpect -- -DwriteVcd=1"，生成波形
+# 目标：运行sbt "testOnly <TEST_NAME> -- -DwriteVcd=1"，生成波形
 .PHONY: test
 test:
 	$(SBT) "$(WAVE_TEST)"
 
-# 目标：运行sbt "testOnly SimpleTestExpect"，不生成波形
+# 目标：运行sbt "testOnly <TEST_NAME>"，不生成波形
 .PHONY: test_no_wave
 test_no_wave:
 	$(SBT) "$(TEST)"
@@ -49,7 +50,3 @@ open-wave:
 clean:
 	$(SBT) clean
 	rm -rf ./test_run_dir
-
-
-
-

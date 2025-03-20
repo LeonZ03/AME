@@ -104,7 +104,7 @@ class FSM extends MMAUFormat{
 
   /*    read & write matrixC    */
 
-  val wireAddrPublicC = Wire(UInt(ADDR_LEN.W))  //C读写地址是可以复用的,只是时间上有前后
+  val wireAddrPublicC = Wire(UInt(ADDR_LEN.W))  //C读写地址是可以复用的,只是时间上有前后(目前认为没有先后,因为是瞬间出来)
   // wireAddrPublicC := ( numN.U * regOffM + regOffN - 1.U) * m.U + regOffK  //只有kState(0) ~ kState(m-1) 的数据是有意义的
   val wireNumStep = Wire(UInt(log2Ceil(numM * numN).W))
   wireNumStep := numN.U * regOffM + regOffN - 1.U
@@ -123,18 +123,23 @@ class FSM extends MMAUFormat{
     io.addrReadC(i) := regDelayC(i-1)
   } 
 
-  for(i <- 0 until n/4){
-    io.addrWriteC(i) := regDelayC(i)
-  }
+  // for(i <- 0 until n/4){
+  //   io.addrWriteC(i) := regDelayC(i)
+  // }
+  io.addrWriteC(0) := wireAddrPublicC  //和read同时
+  for(i <- 1 until n/4){
+    io.addrWriteC(i) := regDelayC(i-1)
+  } 
+
 
   //write C enable
 
-  val regCntZero = RegInit(0.U(2.W))  //记录kState为0的次数,2次之后不再更新
+  val regCntZero = RegInit(0.U(2.W))  //记录kState为 numK-1 的次数,1次之后不再更新
   when(io.sigStart === true.B){
     regCntZero := 0.U
-  }.elsewhen(regCntZero === 2.U){
+  }.elsewhen(regCntZero === 1.U){
     regCntZero := regCntZero
-  }.elsewhen(regOffK_1H(0) === 1.U){
+  }.elsewhen(regOffK_1H(numK-1) === 1.U){
     regCntZero := regCntZero + 1.U
   }.otherwise{
     regCntZero := regCntZero
@@ -143,9 +148,9 @@ class FSM extends MMAUFormat{
   val wireEnWriteC = Wire(Bool())
 
   if(m < numK){
-    wireEnWriteC := Mux(regCntZero === 2.U && regOffK >= 1.U && regOffK <= m.U , true.B , false.B)
+    wireEnWriteC := Mux(regCntZero === 1.U && regOffK >= 0.U && regOffK <= (m-1).U , true.B , false.B)
   }else{
-    wireEnWriteC := Mux(regCntZero === 2.U , true.B , false.B)
+    wireEnWriteC := Mux(regCntZero === 1.U , true.B , false.B)
   }
 
   io.sigEnWriteC(0) := wireEnWriteC
@@ -164,24 +169,26 @@ class FSM extends MMAUFormat{
   
 
   /*    signal done    */
-  val regCntDone = RegInit(0.U(log2Ceil(n/4).W)) //C的第一个bank结束后,还需等待n/4 个周期,所有bank结束
+  val regCntDone = RegInit(0.U(log2Ceil(n/4 + m).W)) //C的第一个bank的index0结束后,还需等待n/4 + m 个周期,所有bank结束
   val wireDone = Wire(Bool()) 
 
   if(m < numK){
-    wireDone := Mux(regOffM === 0.U && regOffN === 0.U && regOffK === m.U && regCntZero === 2.U , true.B , false.B)
+    wireDone := Mux(regOffM === 0.U && regOffN === 0.U && regOffK === 0.U && regCntZero === 1.U , true.B , false.B)
   }else{
-    wireDone := Mux(regOffM === 0.U && regOffN === 1.U && regOffK === 0.U && regCntZero === 2.U , true.B , false.B)
+    wireDone := Mux(regOffM === 0.U && regOffN === 0.U && regOffK === 0.U && regCntZero === 1.U , true.B , false.B)
   }
 
   when(io.sigStart === true.B){
     regCntDone := 0.U
+  }.elsewhen(regCntDone === (n/4 + m - 1).U){ //满了则不再变
+    regCntDone := regCntDone
   }.elsewhen(wireDone === true.B || regCntDone > 0.U){
     regCntDone := regCntDone + 1.U
   }.otherwise{
     regCntDone := 0.U
   }
 
-  io.sigDone := Mux(regCntDone === (n/4-1).U , true.B , false.B)
+  io.sigDone := Mux(regCntDone === (n/4 + m - 1).U , true.B , false.B)
 
 }
 

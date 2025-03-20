@@ -38,4 +38,4 @@ def generate_test_data(k, m, n, output_file):
         f.write(",\n".join(eleC_list) + "\n)\n")
 
 # 调用函数，生成测试数据
-generate_test_data(k=8, m=4, n=8, output_file="CUBEtestGen.txt")
+generate_test_data(k=4, m=4, n=4, output_file="CUBEtestGen.txt")

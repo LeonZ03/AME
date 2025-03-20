@@ -3,14 +3,15 @@ package common
 import chisel3._
 
 //m <= tileK/k  
+//n >= 4
 object Consts {
   val WORD_LEN      = 64
-  val ADDR_LEN      = 32
-  val tileM         = 16
+  val ADDR_LEN      = 16
+  val tileM         = 8
   val tileN         = 16
-  val tileK         = 64
+  val tileK         = 32
 
-  val m             = 8   
+  val m             = 4   
   val n             = 8   
   val k             = 4
 
