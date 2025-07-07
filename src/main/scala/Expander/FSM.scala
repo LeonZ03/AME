@@ -7,9 +7,13 @@ import common._
 import MMAU._
 
 
-
-
-
+/*
+FSM_MMAU模块：MMAU执行单元的状态机，负责控制矩阵乘加运算的数据流、状态切换和完成信号sigDone的生成。
+主要功能：
+  1. 控制MMAU的启动、运算过程和完成判定。
+  2. 管理运算状态寄存器，实现多维循环与地址生成。
+  3. 生成相关控制信号和完成信号sigDone。
+*/
 
 //MMAU latency = numm * numn * numk + 2*sramlatency + m + n/4 -2
 class FSM_MMAU extends MMAUFormat{
@@ -17,7 +21,7 @@ class FSM_MMAU extends MMAUFormat{
     val sigStart = Input(Bool())    //启动信号
     val Ops_io = new Ops_IO //操作数矩阵
     val FSM_MMAU_io = Flipped(new FSM_MMAU_IO) //输入计算单元的信号，均为寄存器链首数据
-    val TileHandler_MMAU_io = Flipped(new TileHandler_MMAU_IO)
+    val TilePadding_MMAU_io = Flipped(new TilePadding_MMAU_IO)
 
     val sigDone = Output(Bool())    //结束信号
 
@@ -36,18 +40,18 @@ class FSM_MMAU extends MMAUFormat{
   
   
   regOffM := Mux(io.sigStart === true.B , 0.U , 
-                Mux(regOffN === io.TileHandler_MMAU_io.numn - 1.U && regOffK === io.TileHandler_MMAU_io.numk - 1.U , 
-                  Mux(regOffM === io.TileHandler_MMAU_io.numm - 1.U , 0.U , regOffM + 1.U) , regOffM)) //可能会有一定开销，可以加一个regOffN_1H优化
+                Mux(regOffN === io.TilePadding_MMAU_io.numn - 1.U && regOffK === io.TilePadding_MMAU_io.numk - 1.U , 
+                  Mux(regOffM === io.TilePadding_MMAU_io.numm - 1.U , 0.U , regOffM + 1.U) , regOffM)) //可能会有一定开销，可以加一个regOffN_1H优化
 
   regOffN := Mux(io.sigStart === true.B , 0.U ,
-                Mux(regOffK === io.TileHandler_MMAU_io.numk - 1.U , 
-                  Mux(regOffN === io.TileHandler_MMAU_io.numn - 1.U , 0.U , regOffN + 1.U) , regOffN))    //regOffK最大时更新
+                Mux(regOffK === io.TilePadding_MMAU_io.numk - 1.U , 
+                  Mux(regOffN === io.TilePadding_MMAU_io.numn - 1.U , 0.U , regOffN + 1.U) , regOffN))    //regOffK最大时更新
 
   regOffK := Mux(io.sigStart === true.B , 0.U , 
-                Mux(regOffK === io.TileHandler_MMAU_io.numk - 1.U , 0.U , regOffK + 1.U))  //递增，循环，最大到numk-1
+                Mux(regOffK === io.TilePadding_MMAU_io.numk - 1.U , 0.U , regOffK + 1.U))  //递增，循环，最大到numk-1
   
   regOffK_1H := Mux(io.sigStart === true.B , 1.U , 
-                  Mux(regOffK === io.TileHandler_MMAU_io.numk - 1.U , 1.U , Cat(regOffK_1H(numK-2 , 0) , regOffK_1H(numK-1))))   //循环左移,最左到bit[numk-1]
+                  Mux(regOffK === io.TilePadding_MMAU_io.numk - 1.U , 1.U , Cat(regOffK_1H(numK-2 , 0) , regOffK_1H(numK-1))))   //循环左移,最左到bit[numk-1]
   
   
   /*    muxCtrlC muxCtrlSum    */
@@ -70,9 +74,9 @@ class FSM_MMAU extends MMAUFormat{
   val wireNumStep = Wire(UInt(log2Ceil(numM * numN).W))
 
   when(regOffN === 0.U && regOffM === 0.U){
-    wireNumStep := (io.TileHandler_MMAU_io.numm - 1.U) * numN.U + (io.TileHandler_MMAU_io.numn - 1.U)
+    wireNumStep := (io.TilePadding_MMAU_io.numm - 1.U) * numN.U + (io.TilePadding_MMAU_io.numn - 1.U)
   }.elsewhen(regOffN === 0.U){
-    wireNumStep := numN.U * regOffM + regOffN - (numN.U - io.TileHandler_MMAU_io.numn + 1.U)
+    wireNumStep := numN.U * regOffM + regOffN - (numN.U - io.TilePadding_MMAU_io.numn + 1.U)
   }.otherwise{
     wireNumStep := numN.U * regOffM + regOffN - 1.U
   }
@@ -85,7 +89,7 @@ class FSM_MMAU extends MMAUFormat{
     regCntZero := 0.U
   }.elsewhen(regCntZero === 1.U){
     regCntZero := regCntZero
-  }.elsewhen(regOffK === io.TileHandler_MMAU_io.numk - 1.U){
+  }.elsewhen(regOffK === io.TilePadding_MMAU_io.numk - 1.U){
     regCntZero := regCntZero + 1.U
   }.otherwise{
     regCntZero := regCntZero
@@ -93,7 +97,7 @@ class FSM_MMAU extends MMAUFormat{
 
   val regCntDone = RegInit(0.U(log2Ceil(n/4 + m).W)) //上电时即为满，是属于sigDone相关寄存器，C的第一个bank的index0结束后（regCntDone开始计时）,还需等待n/4 + m 个周期,所有bank结束
 
-  when(m.U < io.TileHandler_MMAU_io.numk){
+  when(m.U < io.TilePadding_MMAU_io.numk){
     io.FSM_MMAU_io.firstEnWriteC := Mux(regCntZero === 1.U && regOffK >= 0.U && regOffK <= (m-1).U && regCntDone < m.U - sramLatency.U && regFSM_MMAU_is_busy, true.B , false.B)
   }.otherwise{
     io.FSM_MMAU_io.firstEnWriteC := Mux(regCntZero === 1.U && regCntDone < m.U - sramLatency.U && regFSM_MMAU_is_busy, true.B , false.B)
@@ -167,6 +171,14 @@ class FSM_MMAU extends MMAUFormat{
 
 
 
+/*
+FSM_MLU模块：MLU执行单元的状态机，负责控制矩阵Load指令的数据搬运、状态切换和完成信号sigDone的生成。
+主要功能：
+  1. 控制MLU的启动、数据搬运过程和完成判定。
+  2. 管理搬运状态寄存器，实现多维数据搬运与地址生成。
+  3. 生成相关控制信号和完成信号sigDone。
+*/
+
 
 class FSM_MLU extends Module{ //MLU状态机
   val io = IO(new Bundle {
@@ -177,16 +189,16 @@ class FSM_MLU extends Module{ //MLU状态机
     val is_loadAB = Input(Bool()) //是load A/B指令
     val is_loadC = Input(Bool()) //是load C指令
     
-    val TileHandler_MLU_io = Flipped(new TileHandler_MLU_IO)  //padding后用于设置状态机
+    val TilePadding_MLU_io = Flipped(new TilePadding_MLU_IO)  //padding后用于设置状态机
     val FSM_MLU_io = new FSM_MLU_IO //连接下层MLU
 
     // val sigReqDone = Output(Bool()) //读请求信号不再产生，不同于数据全部搬运完 
     val sigDone = Output(Bool()) //Load完成的信号，拉高再拉低
   })
 
-  /*  TileHandler_MLU_io  */
-  val nRow = io.TileHandler_MLU_io.nRow 
-  val nCol = io.TileHandler_MLU_io.nCol 
+  /*  TilePadding_MLU_io  */
+  val nRow = io.TilePadding_MLU_io.nRow 
+  val nCol = io.TilePadding_MLU_io.nCol 
 
   /*  op  */
   val baseAddr = io.rs1
@@ -317,7 +329,13 @@ class FSM_MLU extends Module{ //MLU状态机
 
 
 
-
+/*
+FSM_MSU模块：MSU执行单元的状态机，负责控制矩阵Store指令的数据搬运、状态切换和完成信号sigDone的生成。
+主要功能：
+  1. 控制MSU的启动、数据搬运过程和完成判定。
+  2. 管理搬运状态寄存器，实现多维数据搬运与地址生成。
+  3. 生成相关控制信号和完成信号sigDone。
+*/
 
 class FSM_MSU extends Module {
   val io = IO(new Bundle {
@@ -328,16 +346,16 @@ class FSM_MSU extends Module {
 
     val is_storeC = Input(Bool()) //是store C指令
     
-    val TileHandler_MSU_io = Flipped(new TileHandler_MSU_IO)  //padding后用于设置状态机
+    val TilePadding_MSU_io = Flipped(new TilePadding_MSU_IO)  //padding后用于设置状态机
     val FSM_MSU_io = new FSM_MSU_IO //连接下层MSU
 
     val sigDone = Output(Bool()) //Store完成的信号，拉高再拉低
   })
 
 
-  /*  TileHandler_MSU_io  */
-  val nRow = io.TileHandler_MSU_io.nRow 
-  val nCol = io.TileHandler_MSU_io.nCol 
+  /*  TilePadding_MSU_io  */
+  val nRow = io.TilePadding_MSU_io.nRow 
+  val nCol = io.TilePadding_MSU_io.nCol 
 
   /*  op  */
   val baseAddr = io.rs1

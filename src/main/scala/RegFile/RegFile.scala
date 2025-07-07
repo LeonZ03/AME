@@ -8,7 +8,14 @@ import utility.sram._
 
 
 
-
+/*
+RegFile模块用于实现片上寄存器堆，支持Tr和Acc两类寄存器的多端口读写访问。
+主要功能：
+  1. 实例化多个Tr和Acc寄存器，分别支持独立读写端口。
+  2. 支持Tr、Acc的分组读写和全局读写接口。
+  3. 根据端口地址和使能信号，动态连接到对应寄存器的读写端口。
+  4. 实现Tr和Acc的端口仲裁与数据通路管理，支持多端口并发访问。
+*/
 
 class RegFile extends RegFileFormat {
   val io = IO(new RegFileIO)

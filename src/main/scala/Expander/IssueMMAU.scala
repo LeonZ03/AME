@@ -11,12 +11,12 @@ import MMAU._
 
 class IssueMMAU extends Module{
   val io = IO(new Bundle {
-    val IssueMMAU_Excute_io = new IssueMMAU_Excute_IO   //连接ExcuteHandler
+    val IssueMMAU_Excute_io = new IssueMMAU_Excute_IO   //连接IssueArbiter
     val FSM_MMAU_io = Flipped(new FSM_MMAU_IO)    //传给MMAU
 
   })    
 
-  val subTileHandler = Module(new TileHandler_MMAU)
+  val subTileHandler = Module(new TilePadding_MMAU)
   val subFSM = Module(new FSM_MMAU)
   //存该条指令有关信息
   val reg_mtilem = RegInit(0.U(log2Ceil(Consts.tileM+1).W))
@@ -66,7 +66,7 @@ class IssueMMAU extends Module{
   subFSM.io.Ops_io.md := reg_md(1,0)
 
   /*    between TileHandler and FSM     */
-  subFSM.io.TileHandler_MMAU_io <> subTileHandler.io.TileHandler_MMAU_io
+  subFSM.io.TilePadding_MMAU_io <> subTileHandler.io.TilePadding_MMAU_io
 
 
 }

@@ -81,19 +81,19 @@ object applyTileHandler {
 
 
 
-class TileHandler_MMAU_IO extends Bundle{
+class TilePadding_MMAU_IO extends Bundle{
     val numm = Output(UInt(log2Ceil(Consts.numM+1).W))     
     val numn = Output(UInt(log2Ceil(Consts.numN+1).W))
     val numk = Output(UInt(log2Ceil(Consts.numK+1).W))
 }
 
-class TileHandler_MLU_IO extends Bundle{
+class TilePadding_MLU_IO extends Bundle{
   val nRow = Output(UInt(Consts.nRow_LEN.W))
   val nCol = Output(UInt(Consts.nCol_LEN.W))
 }
 
 
-class TileHandler_MSU_IO extends Bundle{
+class TilePadding_MSU_IO extends Bundle{
   val nRow = Output(UInt(7.W))
   val nCol = Output(UInt(Consts.nCol_LEN.W))
 }
@@ -129,7 +129,7 @@ class Ops_IO extends Bundle{
 
 //IssueMMAU
 
-class IssueMMAU_Excute_IO extends Bundle{//连接ExcuteHandler
+class IssueMMAU_Excute_IO extends Bundle{//连接IssueArbiter
   val sigStart = Input(Bool())    //启动信号
   val in_ms1 = Input(UInt(Consts.All_ADDR_LEN.W))  //初始值
   val in_ms2 = Input(UInt(Consts.All_ADDR_LEN.W))
@@ -178,7 +178,7 @@ class MLU_L2_IO extends Bundle{ //MLU访问L2
 
 //IssueMLU
 
-class IssueMLU_Excute_IO extends Bundle{//连接ExcuteHandler
+class IssueMLU_Excute_IO extends Bundle{//连接IssueArbiter
   val sigStart = Input(Bool())    //启动信号
   val is_mlbe8 = Input(Bool())
   val is_mlae8 = Input(Bool())

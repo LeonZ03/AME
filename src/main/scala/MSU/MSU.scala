@@ -9,7 +9,14 @@ import RegFile._
 import IssueQueen._
 
 
-
+/*
+MSU模块用于实现矩阵Store指令的数据搬运和写回，连接FSM、L2和寄存器堆。
+主要功能：
+  1. 从寄存器堆读取数据，按需拼接后写入L2。
+  2. 支持多路Cacheline并发写入，缓冲写请求。
+  3. 连接FSM控制信号，实现数据流的时序与有效性管理。
+  4. 写入成功后向FSM上报完成状态。
+*/
 
 class MSU extends Module {
     val io = IO(new Bundle {

@@ -6,9 +6,16 @@ import chisel3.util._
 import common._
 import MMAU._
 
+/* 
+  IssueArbiter模块用于仲裁和分发指令到MMAU、MLU、MSU三个执行单元，并管理相关资源分配与释放。
+  主要功能：
+  1. 判断指令类型和资源可用性，决定是否可以发射到对应单元。
+  2. 控制各执行单元的启动信号(sigStart)和输入操作数。
+  3. 处理执行单元完成信号(sigDone)，回收寄存器和功能单元资源。
+  4. 通过Scoreboard接口管理资源分配与释放掩码。
+*/
 
-
-class ExcuteHandler extends Module {
+class IssueArbiter extends Module { //发射仲裁单元
   val io = IO(new Bundle {
     val Uop_io = new Uop_IO
     val ScoreboardVisit_io = new ScoreboardVisit_IO

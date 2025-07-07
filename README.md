@@ -24,8 +24,9 @@ mmacc.w.b
 | verilator | 默认即可         |
 | Python    | ≥ 3.10          |
 | pip (可选)  | ≥ 22.0          |
-| git/make  | 默认即可         |
-| pv        | 用于终端可视化   |
+| git       | 默认即可         |
+|make       | 默认即可 |
+| pv        | 用于终端任务执行时间可视化   |
 | cloc      | 用于统计代码行数 |
 
 可使用make命令 `make install_tools` 一键安装所有工具

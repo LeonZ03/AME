@@ -8,7 +8,14 @@ import Expander._
 import RegFile._
 import IssueQueen._
 
-
+/*
+MLU模块用于实现矩阵Load指令的数据搬运和写回，连接FSM、L2和寄存器堆。
+主要功能：
+  1. 缓冲和路由L2读请求，支持多路Cacheline并发处理。
+  2. 对L2返回数据进行分割、重组和路由，写入目标寄存器。
+  3. 支持多种Load模式（如Load AB、Load C），灵活分配写端口和数据。
+  4. 连接FSM控制信号，实现数据流的时序与有效性管理。
+*/
 
 class MLU extends Module{
     val io = IO(new Bundle {

@@ -10,10 +10,10 @@ import MMAU._
 class IssueMLU extends Module{
   val io = IO(new Bundle {
     val FSM_MLU_io = new FSM_MLU_IO //连接下层MLU
-    val IssueMLU_Excute_io = new IssueMLU_Excute_IO //连接ExcuteHandler
+    val IssueMLU_Excute_io = new IssueMLU_Excute_IO //连接IssueArbiter
   })
 
-  val subTileHandler = Module(new TileHandler_MLU)
+  val subTileHandler = Module(new TilePadding_MLU)
   val subFSM = Module(new FSM_MLU)
 
   //存该条指令有关信息
@@ -84,6 +84,6 @@ printf(p"[debug_IsseuMLU] MLU_sigStart = ${io.IssueMLU_Excute_io.sigStart}, " +
   subTileHandler.io.mtileConfig_io.mtilek := reg_mtilek
 
   /*    between FSM and TileHandler    */
-  subFSM.io.TileHandler_MLU_io <> subTileHandler.io.TileHandler_MLU_io
+  subFSM.io.TilePadding_MLU_io <> subTileHandler.io.TilePadding_MLU_io
 
 }

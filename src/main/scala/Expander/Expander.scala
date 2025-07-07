@@ -7,6 +7,14 @@ import common._
 import MMAU._
 
 
+/*
+  Expander模块作为顶层调度器，连接IssueArbiter和各执行单元（MMAU、MLU、MSU）。
+  主要功能：
+  1. 实例化并连接指令仲裁、执行单元和Scoreboard等子模块。
+  2. 负责各模块间信号的转发与接口对接。
+  3. 提供调试信号sigDone，便于仿真时监控各执行单元的完成状态。
+*/
+
 
 class Expander extends Module{
     val io = IO(new Bundle {
@@ -23,7 +31,7 @@ class Expander extends Module{
 
     
 
-    val subExcuteHandler = Module(new ExcuteHandler)
+    val subIssueArbiter = Module(new IssueArbiter)
     val subIssueMMAU = Module(new IssueMMAU)
     val subIssueMLU = Module(new IssueMLU)
     val subIssueMSU = Module(new IssueMSU)
@@ -37,18 +45,18 @@ class Expander extends Module{
 
 //debug 在出现subIssueMMAU、subIssueMLU、subIssueMSU任意sigdone为真时，打印其值
 when(subIssueMMAU.io.IssueMMAU_Excute_io.sigDone || subIssueMLU.io.IssueMLU_Excute_io.sigDone || subIssueMSU.io.IssueMSU_Excute_io.sigDone) {
-  printf("[ExcuteHandler] subIssueMMAU.sigDone = %d\n", subIssueMMAU.io.IssueMMAU_Excute_io.sigDone)
-  printf("[ExcuteHandler] subIssueMLU.sigDone = %d\n", subIssueMLU.io.IssueMLU_Excute_io.sigDone)
-  printf("[ExcuteHandler] subIssueMSU.sigDone = %d\n", subIssueMSU.io.IssueMSU_Excute_io.sigDone)
+  printf("[IssueArbiter] subIssueMMAU.sigDone = %d\n", subIssueMMAU.io.IssueMMAU_Excute_io.sigDone)
+  printf("[IssueArbiter] subIssueMLU.sigDone = %d\n", subIssueMLU.io.IssueMLU_Excute_io.sigDone)
+  printf("[IssueArbiter] subIssueMSU.sigDone = %d\n", subIssueMSU.io.IssueMSU_Excute_io.sigDone)
 }
     
 
 //debug
-printf(p"[ExcuteHandler] sigDone = ${io.sigDone}\n") 
+printf(p"[IssueArbiter] sigDone = ${io.sigDone}\n") 
 
-    /*  between Top and ExcuteHandler */
-    io.ScoreboardVisit_io <> subExcuteHandler.io.ScoreboardVisit_io
-    io.Uop_io <> subExcuteHandler.io.Uop_io
+    /*  between Top and IssueArbiter */
+    io.ScoreboardVisit_io <> subIssueArbiter.io.ScoreboardVisit_io
+    io.Uop_io <> subIssueArbiter.io.Uop_io
 
 
     /*  between Top and IssueMMAU */
@@ -62,14 +70,14 @@ printf(p"[ExcuteHandler] sigDone = ${io.sigDone}\n")
     io.FSM_MSU_io <> subIssueMSU.io.FSM_MSU_io
     
 
-    /*  between ExcuteHandler and IssueMMAU */
-    subExcuteHandler.io.IssueMMAU_Excute_io <> subIssueMMAU.io.IssueMMAU_Excute_io
+    /*  between IssueArbiter and IssueMMAU */
+    subIssueArbiter.io.IssueMMAU_Excute_io <> subIssueMMAU.io.IssueMMAU_Excute_io
 
-    /*  between ExcuteHandler and IssueMLU */
-    subExcuteHandler.io.IssueMLU_Excute_io <> subIssueMLU.io.IssueMLU_Excute_io
+    /*  between IssueArbiter and IssueMLU */
+    subIssueArbiter.io.IssueMLU_Excute_io <> subIssueMLU.io.IssueMLU_Excute_io
 
-    /*  between ExcuteHandler and IssueMSU */
-    subExcuteHandler.io.IssueMSU_Excute_io <> subIssueMSU.io.IssueMSU_Excute_io
+    /*  between IssueArbiter and IssueMSU */
+    subIssueArbiter.io.IssueMSU_Excute_io <> subIssueMSU.io.IssueMSU_Excute_io
 
 
     /*  between IssueMMAU and IssueMLU  */

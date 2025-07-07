@@ -15,8 +15,8 @@ class FSM_MLU_Test extends AnyFreeSpec with Matchers {
         dut.io.rs1.poke(0.U)
         dut.io.rs2.poke(2.U)
         dut.io.md.poke(1.U)
-        dut.io.TileHandler_MLU_io.nRow.poke(7.U)
-        dut.io.TileHandler_MLU_io.nCol.poke(3.U)
+        dut.io.TilePadding_MLU_io.nRow.poke(7.U)
+        dut.io.TilePadding_MLU_io.nCol.poke(3.U)
 
         dut.io.sigStart.poke(true.B)
         dut.clock.step(1)
