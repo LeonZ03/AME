@@ -40,26 +40,17 @@ class IssueMLU extends Module{
     reg_is_mlae8 := io.IssueMLU_Excute_io.is_mlae8
     reg_is_mlce32 := io.IssueMLU_Excute_io.is_mlce32
   }
-  // .otherwise{
-  //   reg_mtilem := reg_mtilem
-  //   reg_mtilen := reg_mtilen
-  //   reg_mtilek := reg_mtilek
-  //   reg_rs1 := reg_rs1
-  //   reg_rs2 := reg_rs2
-  //   reg_md := reg_md
-      // reg_is_mlbe8 := reg_is_mlbe8
-  // }
 
 // debug
-// printf(p"[debug] MLU_sigStart = ${io.IssueMLU_Excute_io.sigStart}, " +
-//        p"mtilem=${io.IssueMLU_Excute_io.mtilem}, mtilen=${io.IssueMLU_Excute_io.mtilen}, " +
-//        p"mtilek=${io.IssueMLU_Excute_io.mtilek}, rs1=${io.IssueMLU_Excute_io.rs1}, " +
-//        p"rs2=${io.IssueMLU_Excute_io.rs2}, in_md=${io.IssueMLU_Excute_io.in_md}\n")
+printf(p"[debug_IsseuMLU] MLU_sigStart = ${io.IssueMLU_Excute_io.sigStart}, " +
+       p"mtilem=${io.IssueMLU_Excute_io.mtilem}, mtilen=${io.IssueMLU_Excute_io.mtilen}, " +
+       p"mtilek=${io.IssueMLU_Excute_io.mtilek}, rs1=${io.IssueMLU_Excute_io.rs1}, " +
+       p"rs2=${io.IssueMLU_Excute_io.rs2}, in_md=${io.IssueMLU_Excute_io.in_md}\n")
 
 
-// printf(p"[debug] MLU_sigStart = ${io.IssueMLU_Excute_io.sigStart}, " +
-//        p"mtilem=${reg_mtilem}, mtilen=${reg_mtilen}, " +
-//        p"mtilek=${reg_mtilek}\n")
+printf(p"[debug_IsseuMLU] MLU_sigStart = ${io.IssueMLU_Excute_io.sigStart}, " +
+       p"mtilem=${reg_mtilem}, mtilen=${reg_mtilen}, " +
+       p"mtilek=${reg_mtilek}\n")
 
 
 

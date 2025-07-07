@@ -31,7 +31,17 @@ class Expander extends Module{
     /*  for debug   */
     // io.sigDone := subIssueMMAU.io.IssueMMAU_Excute_io.sigDone
     // io.sigDone := subIssueMLU.io.IssueMLU_Excute_io.sigDone
-    io.sigDone := subIssueMSU.io.IssueMSU_Excute_io.sigDone
+    // io.sigDone := subIssueMSU.io.IssueMSU_Excute_io.sigDone
+
+    io.sigDone := subIssueMMAU.io.IssueMMAU_Excute_io.sigDone || subIssueMLU.io.IssueMLU_Excute_io.sigDone || subIssueMSU.io.IssueMSU_Excute_io.sigDone
+
+//debug 在出现subIssueMMAU、subIssueMLU、subIssueMSU任意sigdone为真时，打印其值
+when(subIssueMMAU.io.IssueMMAU_Excute_io.sigDone || subIssueMLU.io.IssueMLU_Excute_io.sigDone || subIssueMSU.io.IssueMSU_Excute_io.sigDone) {
+  printf("[ExcuteHandler] subIssueMMAU.sigDone = %d\n", subIssueMMAU.io.IssueMMAU_Excute_io.sigDone)
+  printf("[ExcuteHandler] subIssueMLU.sigDone = %d\n", subIssueMLU.io.IssueMLU_Excute_io.sigDone)
+  printf("[ExcuteHandler] subIssueMSU.sigDone = %d\n", subIssueMSU.io.IssueMSU_Excute_io.sigDone)
+}
+    
 
 //debug
 printf(p"[ExcuteHandler] sigDone = ${io.sigDone}\n") 

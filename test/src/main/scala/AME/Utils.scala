@@ -452,6 +452,13 @@ object apply {
         dut.io.MLU_L2_io.Cacheline_ReadBack_io(i).valid.poke(false.B)
     }
   }
+
+  def LS_check_steps(dut: AME , steps: Int): Unit = { //前进多个时钟，包含load指令和store指令,同时会检查store的正确性
+    for(_ <- 0 until steps){
+      LS_check_step(dut)
+    }
+  }
+
 }
 
 

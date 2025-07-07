@@ -38,7 +38,7 @@ class AMETest_allIns_usingQueen extends AnyFreeSpec with Matchers {
       AME.apply.IssueQueen_Push_noStep(dut = dut, mtilem = 64, mtilen = 64, mtilek = 256, md = 1, rs1 = 0, rs2 = 512, valid = true.B, is_mlae8 = true.B) //load A
       AME.apply.load_ins_step(dut) 
 
-      AME.apply.IssueQueen_Push_noStep(dut = dut, mtilem = 64, mtilen = 64, mtilek = 256, md = 4, rs1 = 0, rs2 = 512, valid = true.B, is_mlce32 = true.B)//mma
+      AME.apply.IssueQueen_Push_noStep(dut = dut, mtilem = 64, mtilen = 64, mtilek = 256, md = 4, rs1 = 0, rs2 = 512, valid = true.B, is_mlce32 = true.B)//load c
       AME.apply.load_ins_step(dut) 
 
       dut.io.Uop_io.ShakeHands_io.valid.poke(false.B)//结束
@@ -114,13 +114,20 @@ class AMETest_storeC_usingQueen extends AnyFreeSpec with Matchers {
 
 // println(s"ins 1 excuting")
 
-      while(!dut.io.sigDone.peek().litToBoolean){ //等到执行完毕
+      while(!dut.io.sigDone.peek().litToBoolean){ //等到执行完毕，第一次是MLU
         AME.apply.LS_check_step(dut)
         cycleCountMLU += 1
       }
 
-      // AME.apply.L2_store_check_step(dut)
-      // cycleCountMLU += 1
+      AME.apply.L2_store_check_step(dut)
+      cycleCountMLU += 1
+
+      while(!dut.io.sigDone.peek().litToBoolean){ //等到执行完毕，第二次是MSU
+        AME.apply.LS_check_step(dut)
+        cycleCountMLU += 1
+      }
+
+      
 
 
     }

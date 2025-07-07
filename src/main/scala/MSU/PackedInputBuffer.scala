@@ -34,27 +34,3 @@ class PackedInputBuffer(val numWay: Int, val width: Int, val depth: Int) extends
 }
 
 
-
-
-
-// class PackedInputBuffer(val numWay: Int, val width: Int, val depth: Int) extends Module {
-//   val io = IO(new Bundle {
-//     val in = Input(Vec(numWay, UInt(width.W)))
-//     val in_valid = Input(Bool())
-//     val in_ready = Output(Bool())
-//     val out = Decoupled(UInt((numWay * width).W))
-//   })
-
-//   val queue = Module(new Queue(UInt((numWay * width).W), depth))
-
-//   // 拼接输入（大端）
-//   val packedData = Cat(io.in: _*) // 大端拼接：in(0) 占高位，in(numWay-1) 占低位
-
-//   // 入队逻辑
-//   queue.io.enq.valid := io.in_valid
-//   queue.io.enq.bits := packedData
-//   io.in_ready := queue.io.enq.ready
-
-//   // 出队逻辑
-//   io.out <> queue.io.deq
-// }

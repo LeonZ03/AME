@@ -16,12 +16,6 @@ class FSM_MMAU extends MMAUFormat{
   val io = IO(new Bundle {
     val sigStart = Input(Bool())    //启动信号
     val Ops_io = new Ops_IO //操作数矩阵
-
-    // val firstMuxCtrl = Input(UInt(Consts.m.W)) //muxCtrlC和muxCtrlSum第一个值
-    // val firstAddrReadA = Input(UInt(Consts.Tr_INDEX_LEN.W))  //AddrReadA第一个值
-    // val firstAddrReadB = Input(UInt(Consts.Tr_INDEX_LEN.W))  //AddrReadB第一个值
-    // val firstAddrPublicC = Input(UInt(Consts.Acc_INDEX_LEN.W)) //AddrC第一个读写公共地址
-    // val firstEnWriteC = Input(Bool()) //C第一个写使能
     val FSM_MMAU_io = Flipped(new FSM_MMAU_IO) //输入计算单元的信号，均为寄存器链首数据
     val TileHandler_MMAU_io = Flipped(new TileHandler_MMAU_IO)
 

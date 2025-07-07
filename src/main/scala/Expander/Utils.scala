@@ -82,9 +82,6 @@ object applyTileHandler {
 
 
 class TileHandler_MMAU_IO extends Bundle{
-    // val tilem = Output(UInt(log2Ceil(Consts.tileM+1).W))   //padding后m维度的长度，供计算单元使用
-    // val tilen = Output(UInt(log2Ceil(Consts.tileN+1).W))   //padding后n维度的长度，供计算单元使用
-    // val tilek = Output(UInt(log2Ceil(Consts.tileK+1).W))   //padding后k维度的长度，供计算单元使用
     val numm = Output(UInt(log2Ceil(Consts.numM+1).W))     
     val numn = Output(UInt(log2Ceil(Consts.numN+1).W))
     val numk = Output(UInt(log2Ceil(Consts.numK+1).W))
@@ -110,8 +107,6 @@ class TileHandler_MSU_IO extends Bundle{
 
 //CTRL、MMAU、FSM公共
 class FSM_MMAU_IO extends Bundle {   
-  // val sigStart = Input(Bool())    //启动信号，由FSM传入
-  // val sigDone = Input(Bool())    //结束信号，由FSM传入
   val firstMuxCtrl = Input(UInt(Consts.m.W)) //muxCtrlC和muxCtrlSum第一个值
   val firstAddrReadA = Input(UInt(Consts.Tr_INDEX_LEN.W))  //AddrReadA第一个值
   val firstAddrReadB = Input(UInt(Consts.Tr_INDEX_LEN.W))  //AddrReadB第一个值
@@ -121,9 +116,6 @@ class FSM_MMAU_IO extends Bundle {
   val actPortReadB = Input(Bool())  //B读端口激活
   val actPortReadC = Input(Bool())  //C读端口激活
   val actPortWriteC = Input(Bool())  //C写端口激活
-  // val ms1 = Input(UInt(Consts.Tr_ADDR_LEN.W))
-  // val ms2 = Input(UInt(Consts.Tr_ADDR_LEN.W))
-  // val md = Input(UInt(Consts.Acc_ADDR_LEN.W))
   val Ops_io = new Ops_IO
 }
 
@@ -139,7 +131,6 @@ class Ops_IO extends Bundle{
 
 class IssueMMAU_Excute_IO extends Bundle{//连接ExcuteHandler
   val sigStart = Input(Bool())    //启动信号
-  // val is_shaked = Input(Bool()) //是否握手成功
   val in_ms1 = Input(UInt(Consts.All_ADDR_LEN.W))  //初始值
   val in_ms2 = Input(UInt(Consts.All_ADDR_LEN.W))
   val in_md = Input(UInt(Consts.All_ADDR_LEN.W))
@@ -170,7 +161,6 @@ class Cacheline_ReadBack_IO extends Bundle{ //从L2读回的数据（单条cache
 }
 
 class FSM_MLU_IO extends Bundle{  //MLU的FSM，连接下层MLU接口
-  // val sigDone = Input(Bool()) //由MLU告知上级Load是否完成
   val sigLineDone = Input(Vec(8, Bool()))  //每条Cacheline对应的写入RF，每成功写入一次数据，则上报一次
 
   val Cacheline_Read_io = Vec(8 , new Cacheline_Read_IO)  //对应8条cacheline
@@ -193,8 +183,6 @@ class IssueMLU_Excute_IO extends Bundle{//连接ExcuteHandler
   val is_mlbe8 = Input(Bool())
   val is_mlae8 = Input(Bool())
   val is_mlce32 = Input(Bool())
-  
-  // val is_shaked = Input(Bool()) //是否握手成功
   val rs1 = Input(UInt(Consts.rs1_LEN.W))  //baseaddr
   val rs2 = Input(UInt(Consts.rs2_LEN.W))   //stride
   val in_md = Input(UInt(Consts.All_ADDR_LEN.W))
@@ -237,7 +225,6 @@ class FSM_MSU_Output_IO extends Bundle {  //MSU状态机直接输出信号
 
 
 class FSM_MSU_IO extends Bundle{  //MSU的FSM，连接下层MSU接口
-  // val sigDone = Input(Bool()) //由MSU告知上级Load是否完成
   val sigLineDone = Input(Vec(2, Bool()))  //每条Cacheline对应的写入RF，每成功写入一次数据，则上报一次
 
   val FSM_MSU_Output_io = Vec(2 , new FSM_MSU_Output_IO)  //状态机输出信号

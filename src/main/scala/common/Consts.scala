@@ -11,38 +11,39 @@ import chisel3.util._
 object Consts {
 
   /*    MMAU    */
-  val WORD_LEN      = 64
+  val WORD_LEN      = 64  //暂时没用
 
 
   val tileM         = 64  //RegFile尺寸，M维度
-  val tileN         = 64
-  val tileK         = 256
+  val tileN         = 64  //RegFile尺寸，N维度
+  val tileK         = 256 //RegFile尺寸，K维度
 
   val m             = 32  //MMAU计算单元尺寸，M维度
-  val n             = 32  
-  val k             = 8
+  val n             = 32  //MMAU计算单元尺寸，N维度
+  val k             = 8   //MMAU计算单元尺寸，K维度
 
   val numM          = tileM / m
   val numN          = tileN / n
   val numK          = tileK / k
 
   /*    RegFile   */
-  val sramLatency: Int = 1 
+  val sramLatency: Int = 1  //sram延迟周期数
   //Tr
   val Tr_LEN        = 8 * k//Tr单个元素位宽（向量）
 
-  val genTr: Data = UInt(Tr_LEN.W)
-  val setTr: Int = numM * numK
-  val wayTr: Int = 1
-  val dataSplitTr: Int = k
-  val setSplitTr: Int = 1
-  val waySplitTr: Int = 1
+  val genTr: Data = UInt(Tr_LEN.W)  // Tr单个元素位宽（向量）
+  val setTr: Int = numM * numK  // Tr深度
+  val wayTr: Int = 1  //bank数，由于实现时是每个bank单独实例化，所以这里是1
+  val dataSplitTr: Int = k  //实例化时的一个参数，可能影响性能，填别的数对仿真没有影响（貌似）
+  val setSplitTr: Int = 1   //同上
+  val waySplitTr: Int = 1   //同上
   val useBitmaskTr: Boolean = false
 
-  val numTr: Int = 4
-  val numTrBank: Int = m
-  val numTrReadPort: Int = 3
-  val numTrWritePort: Int = 3
+  val numTr: Int = 4  //Tr寄存器数量
+  val numTrBank: Int = m  //Tr寄存器bank数量
+  val numTrReadPort: Int = 3  //Tr寄存器读端口数量
+  val numTrWritePort: Int = 3  //Tr寄存器写端口数量
+
 
   val Tr_INDEX_LEN    = log2Ceil(setTr) //Tr寻址时index需要的位宽
   val Tr_ADDR_LEN     = log2Ceil(numTr) //表示Tr标号所需位宽（0～3）

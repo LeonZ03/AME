@@ -59,9 +59,6 @@ class TileHandler_MLU extends Module {
     val TileHandler_MLU_io = new TileHandler_MLU_IO
   })
 
-  // 默认输出为 0
-  // val nRow = WireDefault(0.U(Consts.nRow_LEN.W))
-  // val nCol = WireDefault(0.U(Consts.nCol_LEN.W))
 
   val nRow = Wire(UInt(Consts.nRow_LEN.W))
   val nCol = Wire(UInt(Consts.nCol_LEN.W))
@@ -120,9 +117,6 @@ class TileHandler_MMAU extends MMAUFormat {
     tilek := applyTileHandler.ceilAlignPow2(io.mtileConfig_io.mtilek, log2k)
   }
 
-  // io.TileHandler_MMAU_io.tilem := tilem
-  // io.TileHandler_MMAU_io.tilen := tilen
-  // io.TileHandler_MMAU_io.tilek := tilek
 
   // 替代除法为右移
   io.TileHandler_MMAU_io.numm := tilem >> log2m.U

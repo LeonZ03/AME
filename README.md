@@ -23,7 +23,7 @@ mmacc.w.b
 | Mill      | 0.11.1           |
 | verilator | 默认即可         |
 | Python    | ≥ 3.10          |
-| pip       | ≥ 22.0          |
+| pip (可选)  | ≥ 22.0          |
 | git/make  | 默认即可         |
 | pv        | 用于终端可视化   |
 | cloc      | 用于统计代码行数 |

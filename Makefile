@@ -45,6 +45,6 @@ install_tools:
 	@echo "✅ 当前mill版本已为0.11.1"
 
 	# 可选：安装常用 Python 库（用于测试、绘图、数据处理）
-	pip3 install --user -U matplotlib numpy wheel
+	# pip3 install --user -U matplotlib numpy wheel
 
 	@echo "✅ All tools have been installed!"
